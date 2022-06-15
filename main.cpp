@@ -1,0 +1,146 @@
+#include <iostream>
+#include <ctime>
+#include <iomanip>
+
+using namespace std;
+
+struct Job
+{
+	int duration;
+	int deadline;
+	int number_of_work;
+
+	Job() { duration = deadline = number_of_work = 0;}
+	
+};
+
+void Initialization(Job* job, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		cin >> job[i].duration;
+		cin >> job[i].deadline;
+		job[i].number_of_work = i + 1;
+	}
+}
+
+void Random_Initialization(Job* job, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		job[i].duration = rand() % 18 + 1;
+	    job[i].deadline = rand() % 18 + 1;
+		job[i].number_of_work = i + 1;
+	}
+}
+
+void Print(Job* job, int n)
+{
+	cout << "Work   Duration   Deadline" << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << setw(3) << job[i].number_of_work << setw(8) << job[i].duration << setw(12) << job[i].deadline << endl;
+	}
+}
+
+void Quick_sort(Job* job, int Size)
+{
+	int left_border = 0;
+	int right_border = Size - 1;
+
+	int mid = job[Size / 2].duration;
+	int mid_2 = job[Size / 2].deadline;
+
+	do
+	{
+		while (job[left_border].duration < mid || (job[left_border].duration == mid && job[left_border].deadline > mid_2))
+		{
+			left_border++;
+			//kol_comp++;
+		}
+
+		while (job[right_border].duration > mid || (job[right_border].duration == mid && job[right_border].deadline < mid_2))
+		{
+			right_border--;
+		//	kol_comp++;
+		}
+
+		if (left_border <= right_border) {
+			Job tmp = job[left_border];
+			job[left_border] = job[right_border];
+			job[right_border] = tmp;
+
+			left_border++;
+			right_border--;
+			//kol_mov++;
+		}
+	} while (left_border <= right_border);
+
+	if (right_border > 0)
+		Quick_sort(job, right_border + 1);
+
+	if (left_border < Size)
+		Quick_sort(&job[left_border], Size - left_border);
+
+	return;
+}
+
+
+int& Max_profit(Job* job, int n)
+{
+	int temp = job[0].deadline - job[0].duration;
+
+	for (int i = 1; i < n - 1; i++)
+	{
+		int temp_2 = job[i].deadline;
+
+		for (int j = i; j >= 0; j--)
+		{
+			temp_2 -= job[j].duration;
+		}
+
+		if (temp < temp_2)
+			temp = temp_2;
+		
+	}
+
+	return temp;
+}
+
+
+void Task(Job* job, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		cout << job[i].number_of_work;
+		if (i != n - 1)
+			cout << "-";
+	}
+
+	cout << endl;
+
+	cout << Max_profit(job, n) << endl;
+
+}
+
+
+
+
+int main()
+{
+
+	srand(time(NULL));
+	int n;
+	cout << "Input amount of works: ";
+	cin >> n;
+
+	Job* job = new Job[n];
+
+	Initialization(job, n);
+	Print(job, n);
+
+	Quick_sort(job, n);
+	Task(job, n);
+
+
+}

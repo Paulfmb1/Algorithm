@@ -1,0 +1,71 @@
+#include <iostream> 
+#include <iomanip>
+
+using namespace std;
+
+struct Request
+{
+	size_t start = 0;
+	size_t finish = 0;
+
+	Request() = default;
+};
+
+int Min_value(int* data, int start, int finish)
+{
+	int temp = data[start - 1];
+	for (int i = start; i < finish; i++)
+	{
+		if (temp < data[i])
+			temp = data[i];
+	}
+	return temp;
+}
+
+void Task(int kol_peregon, int* data, int kol_request, Request* req)
+{
+	for (int i = 0; i < kol_request; i++)
+	{
+		cout << Min_value(data, req[i].start, req[i].finish - 1) << endl;
+	}
+}
+
+int main()
+{
+	int kol_peregon;
+	cout << "Enter number of the peregonov: ";
+	cin >> kol_peregon;
+	cout << endl;
+	
+	int* data = new int[kol_peregon];
+
+	int temp;
+	for(int i = 1;i <= kol_peregon; i++)
+	{
+		cout << "Enter number of the free place " << i << "-" << i + 1 << " : ";
+		cin >> temp;
+		cout << endl;
+		data[i - 1] = temp;
+	}
+
+	int kol_requests;
+	cout << "Enter number of requests: ";
+	cin >> kol_requests;
+	cout << endl;
+
+	Request* req = new Request[kol_requests]{};
+
+	for (int i = 0; i < kol_requests; i++)
+	{
+		cout << "Enter start station: ";
+		cin >> req[i].start;
+		cout << "Enter finish station: ";
+		cin >> req[i].finish;
+		cout << endl;
+
+		if (req[i].start >= req[i].finish || req[i].finish > kol_peregon + 1)
+			throw invalid_argument("Nice try, bro!");
+	}
+
+	Task(kol_peregon, data, kol_requests, req);
+}
